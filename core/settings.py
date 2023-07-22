@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i2te3c9@tm_^t4)#fgb#d)zr+t@l5$jdt2v^&7x4079^rx8k2!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['1a56-196-190-60-89.ngrok-free.app']
 
 
 # Application definition
@@ -96,7 +96,6 @@ DATABASES = {
         "PORT": 5432,  # default postgres port
     }
 }
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -6,3 +6,4 @@ class ImageModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageModel
         fields = ('id', 'image', 'description', 'prediction_result')
+        read_only_fields = ('prediction_result', 'description',)

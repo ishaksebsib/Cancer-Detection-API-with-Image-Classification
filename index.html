@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Upload and Prediction</title>
+  </head>
+
+  <body>
+    <input type="file" id="imageFileInput" accept="image/*" />
+    <button onclick="uploadImage()">Upload Image</button>
+
+    <script>
+      async function uploadImage() {
+        const imageFileInput = document.getElementById("imageFileInput");
+        const file = imageFileInput.files[0];
+
+        if (!file) {
+          alert("Please select an image to upload.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/v1/predict/",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Response:", data);
+          } else {
+            const errorResponse = await response.text();
+            console.error("Error:", errorResponse);
+          }
+        } catch (error) {
+          console.error("Error:", error.message);
+        }
+      }
+    </script>
+  </body>
+</html>
