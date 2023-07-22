@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i2te3c9@tm_^t4)#fgb#d)zr+t@l5$jdt2v^&7x4079^rx8k2!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['1a56-196-190-60-89.ngrok-free.app']
+ALLOWED_HOSTS = ['1a56-196-190-60-89.ngrok-free.app', 'localhost']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # 3rd-party apps
     "rest_framework",
+    "corsheaders",
 
     # Local apps
     'api.apps.ApiConfig',
@@ -53,6 +54,10 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    # CROS Origin MiddleWares
+    'corsheaders.middleware.CorsMiddleware',
+
+    # Django Basic MIddleWares
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,6 +66,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Allow All URLS not recommended for prodcution TODO: to be change on production
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Set allowed Origins URL based on accepted end points
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+# ]
+
 
 ROOT_URLCONF = 'core.urls'
 

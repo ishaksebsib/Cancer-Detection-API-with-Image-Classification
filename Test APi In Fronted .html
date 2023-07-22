@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Upload</title>
+  </head>
+  <body>
+    <h1>Image Upload</h1>
+    <input type="file" id="imageInput" />
+    <button onclick="uploadImage()">Upload</button>
+    <div id="loading" style="display: none">Uploading...</div>
+    <div id="response"></div>
+
+    <script>
+      async function uploadImage() {
+        const imageInput = document.getElementById("imageInput");
+        const file = imageInput.files[0];
+
+        if (!file) {
+          alert("Please select an image file.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const loadingDiv = document.getElementById("loading");
+        const responseDiv = document.getElementById("response");
+
+        try {
+          loadingDiv.style.display = "block"; // Show loading indicator
+
+          const response = await fetch(
+            "http://localhost:8000/api/v1/predict/",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log(data);
+          displayResponse(JSON.stringify(data, null, 2));
+        } catch (error) {
+          console.error("Error:", error);
+          displayResponse(
+            "Error occurred. Please check the console for details."
+          );
+        } finally {
+          loadingDiv.style.display = "none"; // Hide loading indicator
+        }
+      }
+
+      function displayResponse(responseText) {
+        const responseDiv = document.getElementById("response");
+        responseDiv.innerText = responseText;
+      }
+    </script>
+  </body>
+</html>
