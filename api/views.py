@@ -51,6 +51,7 @@ class ImageModelViewSet(viewsets.ModelViewSet):
 
         if self.model:
             success = True
+            message = "The prediction was successful"
             # Perform prediction
             prediction_result = predictBloodCancer(image_path, self.model)
 
@@ -68,12 +69,14 @@ class ImageModelViewSet(viewsets.ModelViewSet):
             instance.save()
         else:
             success = False
+            message = "Unkown Error Occured, Please Try again later"
             prediction_result = {}
             
 
         # Customize the response data
         response_data = {
             'success': success,
+            'message': message,
             'prediction_result': prediction_result
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
