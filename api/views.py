@@ -38,6 +38,11 @@ class ImageModelViewSet(viewsets.ModelViewSet):
 
         # Load the model during Django app startup
         self.model = load_model(model_path)
+        
+        # load the model weights
+        full_model_weights_name = "weights_"+full_model_name
+        self.model.load_weights(weights_path)
+        self.model.compile(optimizer='adamax', loss='categorical_crossentropy', metrics=['accuracy'])
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
