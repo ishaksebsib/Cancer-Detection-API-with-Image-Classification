@@ -35,9 +35,11 @@ class ImageModelViewSet(viewsets.ModelViewSet):
         full_model_name = model_name + "_v_" + model_version + model_extention
         model_path = os.path.join(
             settings.MEDIA_ROOT, 'models', full_model_name)
-
-        # Load the model during Django app startup
-        self.model = load_model(model_path)
+        try:
+            # Load the model during Django app startup
+            self.model = load_model(model_path)
+        except Exception:
+            self.model = None
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -47,25 +49,34 @@ class ImageModelViewSet(viewsets.ModelViewSet):
         # Obtain the local storage path of the uploaded image
         image_path = serializer.instance.image.path
 
-        # Perform prediction
-        prediction_result = predictBloodCancer(image_path, self.model)
+        if self.model:
+            success = True
+            message = "The prediction was successful"
+            # Perform prediction
+            prediction_result = predictBloodCancer(image_path, self.model)
 
-        # Get the instance of the created model
-        instance = serializer.instance
+            # Get the instance of the created model
+            instance = serializer.instance
 
-        if prediction_result['is_cancer']:
-            instance.description = 'The uploaded image contains Blood cancer (Leukemia).'
+            if prediction_result['is_cancer']:
+                instance.description = 'The given sample is cancerous (leukemia).'
+            else:
+                instance.description = 'The given sample is non-cancerous.'
+            instance.save()
+
+            # Set the prediction_result field of the instance
+            instance.prediction_result = prediction_result
+            instance.save()
         else:
-            instance.description = 'The uploaded image does not contain cancer.'
-        instance.save()
-
-        # Set the prediction_result field of the instance
-        instance.prediction_result = prediction_result
-        instance.save()
+            success = False
+            message = "Unkown Error Occured, Please Try again later"
+            prediction_result = {}
+            
 
         # Customize the response data
         response_data = {
-            'message': 'Image uploaded successfully.',
+            'success': success,
+            'message': message,
             'prediction_result': prediction_result
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
